@@ -1,6 +1,27 @@
 # Obsidian Bases 视图设计
 
-本 Skill 不直接规定 `.base` 的具体语法；如果安装了 `obsidian-bases`，由它负责生成当前版本兼容的文件。本文件只定义需要表达的知识视图。
+优先使用已安装的 `obsidian-bases` 处理格式细节。没有该 Skill 时，可按下方最小模板直接创建 `.base` 文件，并参考 [Obsidian 官方 Bases 语法](https://obsidian.md/help/bases/syntax)核对当前版本。已有 Base 应先读取再局部修改，保留其他视图与自定义字段。
+
+## 无 companion Skill 时的最小模板
+
+以下内容保存为 `.base` 文件；`type`、`era` 等字段来自本 Skill 的笔记 frontmatter。按 Vault 实际字段与目标笔记类型调整过滤条件和列。需要使用 Obsidian 的 Bases 核心插件查看结果。
+
+```yaml
+filters:
+  and:
+    - 'file.ext == "md"'
+    - 'note.type == "person"'
+views:
+  - type: table
+    name: 人物
+    order:
+      - file.name
+      - note.era
+      - note.states
+      - note.status
+```
+
+创建后在 Obsidian 中打开，确认筛选结果和列名；若目标版本语法有变化，按官方语法调整。不要为生成视图而改写用户原有笔记字段。
 
 ## 1. 人物视图
 

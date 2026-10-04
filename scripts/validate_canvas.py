@@ -1,23 +1,45 @@
 #!/usr/bin/env python3
 import json
+import re
 import sys
 from pathlib import Path
 
 ALLOWED_TYPES = {"text", "file", "link", "group"}
 SIDES = {"top", "right", "bottom", "left"}
 ENDS = {"none", "arrow"}
+BACKGROUND_STYLES = {"cover", "ratio", "repeat"}
+COLOR_RE = re.compile(
+    r"^(?:[1-6]|#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8}))$"
+)
 
 
 def fail(errors, message):
     errors.append(message)
 
 
+def nonempty_string(value):
+    return isinstance(value, str) and bool(value.strip())
+
+
+def check_color(errors, item, path):
+    if "color" in item and (
+        not isinstance(item["color"], str) or not COLOR_RE.fullmatch(item["color"])
+    ):
+        fail(errors, f"{path}.color must be a preset '1'–'6' or a hex color string")
+
+
+def reject_non_json_constant(value):
+    raise ValueError(f"non-JSON numeric literal: {value}")
+
+
 def validate(path: Path) -> list[str]:
     errors = []
     try:
-        data = json.loads(path.read_text(encoding="utf-8"))
-    except Exception as exc:
-        return [f"Invalid JSON: {exc}"]
+        data = json.loads(
+            path.read_text(encoding="utf-8"), parse_constant=reject_non_json_constant
+        )
+    except (OSError, UnicodeError, ValueError) as exc:
+        return [f"Cannot read valid JSON: {exc}"]
 
     if not isinstance(data, dict):
         return ["Top-level value must be an object"]
@@ -39,7 +61,7 @@ def validate(path: Path) -> list[str]:
             fail(errors, f"{p} must be an object")
             continue
         nid = node.get("id")
-        if not isinstance(nid, str) or not nid:
+        if not nonempty_string(nid):
             fail(errors, f"{p}.id must be a non-empty string")
         elif nid in node_ids:
             fail(errors, f"Duplicate node id: {nid}")
@@ -47,24 +69,46 @@ def validate(path: Path) -> list[str]:
             node_ids.add(nid)
 
         ntype = node.get("type")
-        if ntype not in ALLOWED_TYPES:
+        if not isinstance(ntype, str) or ntype not in ALLOWED_TYPES:
             fail(errors, f"{p}.type must be one of {sorted(ALLOWED_TYPES)}")
 
         for key in ("x", "y", "width", "height"):
             value = node.get(key)
-            if not isinstance(value, int) or isinstance(value, bool):
+            if type(value) is not int:
                 fail(errors, f"{p}.{key} must be an integer")
-        for key in ("width", "height"):
-            value = node.get(key)
-            if isinstance(value, int) and value <= 0:
+            elif key in ("width", "height") and value <= 0:
                 fail(errors, f"{p}.{key} must be > 0")
 
-        required = {"text": "text", "file": "file", "link": "url"}.get(ntype)
-        if required and (not isinstance(node.get(required), str) or not node.get(required)):
+        check_color(errors, node, p)
+
+        required = (
+            {"text": "text", "file": "file", "link": "url"}.get(ntype)
+            if isinstance(ntype, str)
+            else None
+        )
+        if required and not nonempty_string(node.get(required)):
             fail(errors, f"{p}.{required} must be a non-empty string for type '{ntype}'")
 
-        if ntype == "file" and isinstance(node.get("file"), str):
-            norm = node["file"].replace("\\", "/").strip().lower()
+        if ntype == "file" and "subpath" in node and (
+            not isinstance(node["subpath"], str) or not node["subpath"].startswith("#")
+        ):
+            fail(errors, f"{p}.subpath must be a string starting with '#'")
+
+        if ntype == "group":
+            for key in ("label", "background"):
+                if key in node and not isinstance(node[key], str):
+                    fail(errors, f"{p}.{key} must be a string")
+            if "backgroundStyle" in node and (
+                not isinstance(node["backgroundStyle"], str)
+                or node["backgroundStyle"] not in BACKGROUND_STYLES
+            ):
+                fail(
+                    errors,
+                    f"{p}.backgroundStyle must be one of {sorted(BACKGROUND_STYLES)}",
+                )
+
+        if ntype == "file" and nonempty_string(node.get("file")):
+            norm = node["file"].replace("\\", "/").strip().casefold()
             if norm in files:
                 fail(errors, f"Duplicate file node for '{node['file']}' ({files[norm]} and {nid})")
             else:
@@ -78,7 +122,7 @@ def validate(path: Path) -> list[str]:
             fail(errors, f"{p} must be an object")
             continue
         eid = edge.get("id")
-        if not isinstance(eid, str) or not eid:
+        if not nonempty_string(eid):
             fail(errors, f"{p}.id must be a non-empty string")
         elif eid in edge_ids:
             fail(errors, f"Duplicate edge id: {eid}")
@@ -86,24 +130,32 @@ def validate(path: Path) -> list[str]:
             edge_ids.add(eid)
 
         frm, to = edge.get("fromNode"), edge.get("toNode")
-        if frm not in node_ids:
+        if not nonempty_string(frm):
+            fail(errors, f"{p}.fromNode must be a non-empty string")
+        elif frm not in node_ids:
             fail(errors, f"{p}.fromNode references missing node: {frm}")
-        if to not in node_ids:
+        if not nonempty_string(to):
+            fail(errors, f"{p}.toNode must be a non-empty string")
+        elif to not in node_ids:
             fail(errors, f"{p}.toNode references missing node: {to}")
 
         for key in ("fromSide", "toSide"):
-            if key in edge and edge[key] not in SIDES:
+            if key in edge and (not isinstance(edge[key], str) or edge[key] not in SIDES):
                 fail(errors, f"{p}.{key} must be one of {sorted(SIDES)}")
         for key in ("fromEnd", "toEnd"):
-            if key in edge and edge[key] not in ENDS:
+            if key in edge and (not isinstance(edge[key], str) or edge[key] not in ENDS):
                 fail(errors, f"{p}.{key} must be one of {sorted(ENDS)}")
+        check_color(errors, edge, p)
 
         label = edge.get("label", "")
-        signature = (frm, to, label.strip() if isinstance(label, str) else label)
-        if signature in seen_edges:
-            fail(errors, f"Duplicate semantic edge: {signature}")
-        else:
-            seen_edges.add(signature)
+        if not isinstance(label, str):
+            fail(errors, f"{p}.label must be a string")
+        if nonempty_string(frm) and nonempty_string(to) and isinstance(label, str):
+            signature = (frm, to, label.strip())
+            if signature in seen_edges:
+                fail(errors, f"Duplicate semantic edge: {signature}")
+            else:
+                seen_edges.add(signature)
 
     return errors
 

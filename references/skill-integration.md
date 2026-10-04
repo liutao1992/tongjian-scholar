@@ -95,7 +95,7 @@ Never point `knap` at raw extracted entities and let batch generation decide the
 
 ## Bases routing
 
-This Skill decides desired fields and views. `obsidian-bases` decides the current compatible `.base` syntax.
+This Skill decides desired fields and views. Use `obsidian-bases` for compatible `.base` syntax when available. Otherwise use the minimal fallback in `bases-spec.md` and the linked official syntax reference.
 
 Read `bases-spec.md` for the semantic view requirements.
 

@@ -196,6 +196,9 @@ Before finalizing:
 - Every edge endpoint exists.
 - Every node has valid coordinates and positive dimensions.
 - Type-specific required fields exist (`text`, `file`, `url`).
+- Optional `color`, file `subpath`, group `backgroundStyle`, and edge labels/sides/ends have valid types and values.
 - No duplicate canonical file nodes were accidentally created.
 - Semantic edges use meaningful labels where appropriate.
 - Existing positions/content are preserved during incremental update.
+
+Run this Skill's validator using the absolute path to `scripts/validate_canvas.py` beneath the directory containing `SKILL.md`. It checks JSON Canvas 1.0 structure plus this Skill's duplicate-file and duplicate-semantic-edge policy; inspect the rendered map separately for layout and historical meaning.

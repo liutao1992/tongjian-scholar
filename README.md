@@ -2,7 +2,7 @@
 
 面向《资治通鉴》深度阅读、历史机制分析与 Obsidian 知识地图构建的 Agent Skill。
 
-当前版本：`1.3.1`
+当前版本：`1.3.2`
 
 ## 核心能力
 
@@ -17,6 +17,7 @@
 - JSON Canvas 知识地图及增量更新
 - Vault 增量知识合并（CREATE / UPDATE / LINK / PROMOTE / COMPARE / DEFER）
 - 冲突观点保留与判断演化
+- 关键史实和争议判断的来源定位
 - 复用本地已安装的 Obsidian / Canvas / wiki / batch-generation 类 Skills
 
 ## 目录
@@ -66,6 +67,7 @@ validate_vault / validate_canvas
 ```
 
 没有 companion skill 时，本 Skill 仍可独立工作。
+若需要直接生成 `.base`，可使用 `references/bases-spec.md` 中的最小模板。
 
 ## 增量合并
 
@@ -86,6 +88,8 @@ python scripts/validate_canvas.py "Maps/战国改革.canvas"
 ```
 
 `validate_skill.py` 检查 Skill 包结构和内部引用；`validate_vault.py` 会做轻量级重复 UID、同名笔记、alias 冲突和 wikilink 完整性检查；`validate_canvas.py` 检查 Canvas JSON、节点/边引用与重复关系。
+
+上述命令从仓库根目录执行。安装到其他位置后，从任意工作目录调用时，应使用 Skill 目录下脚本的绝对路径。Canvas 校验覆盖 JSON Canvas 1.0 的结构字段与本 Skill 的去重规则，不校验历史解释或视觉布局。
 
 ## 安装
 

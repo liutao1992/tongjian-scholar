@@ -2,6 +2,12 @@
 
 Use this reference for complex person/event/reform/comparison questions.
 
+## Evidence and source location
+
+For a decisive fact, disputed point, or quotation, record the source work and the most precise available locator: volume/chapter, historical year, passage, and edition or URL if relevant. Cite the locator near the claim in the answer or canonical note. A work title alone is insufficient to recheck a causal argument.
+
+If the user provides only an excerpt, cite its supplied location if present. If no location can be verified, say so; keep the claim provisional rather than inventing a volume or wording. Mark a reconstructed motive, coalition, or causal mechanism as inference and identify the facts on which it rests. When sources disagree, keep each source's claim and locator separate.
+
 ## 1. Actor Map
 
 For each actor or group:
@@ -121,7 +127,7 @@ For “why is this story here?” inspect:
 4. explicit comments (`臣光曰` etc.);
 5. recurring political propositions: 名分、礼、继承、用人、纳谏、权力边界、战争审慎、制度稳定.
 
-Always separate explicit judgment from inferred editorial purpose.
+Reserve “Sima Guang's explicit judgment” for a directly attributable statement with a verifiable passage. Selection, emphasis, and sequence support an inference about editorial purpose, not a direct quotation or explicit judgment.
 
 ## 8. Controlled Comparison
 

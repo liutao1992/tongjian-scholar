@@ -2,7 +2,7 @@
 name: tongjian-scholar
 description: Deep-read and analyze 《资治通鉴》 through actors, interests, decisions, causal mechanisms, institutions, Sima Guang's editorial viewpoint, and cross-case comparison; then turn the result into maintainable Obsidian notes, MOCs, and JSON Canvas knowledge maps. Use for reading, discussing, comparing, reviewing, or building an Obsidian knowledge system around 《资治通鉴》 or similar Chinese historical works when the same method is requested.
 metadata:
-  version: "1.3.1"
+  version: "1.3.2"
   language: "zh-CN"
 ---
 
@@ -40,11 +40,13 @@ Organize knowledge into four layers:
 Always distinguish:
 
 - **史实** — directly supported by reliable historical material;
-- **司马光明确判断** — explicit comment or clear textual judgment;
+- **司马光明确判断** — a directly attributable comment with a verifiable passage, such as `臣光曰`;
 - **合理推断** — analysis inferred from incentives, constraints, and sequence;
 - **现代映射** — modern concepts used only to aid understanding.
 
 Never present the last two as certain historical fact.
+Treat emphasis, selection, and ordering in the narrative as inferred editorial intent, even when the pattern looks clear.
+For important factual or contested claims, retain a source locator (work, volume or chapter, year or passage, and edition or URL when available). Do not invent a locator; mark claims without one as unverified.
 
 ## Workflow
 
@@ -237,8 +239,9 @@ When the user asks to save, organize, map, or export knowledge:
 6. generate Canvas only when spatial relationships add value;
 7. use an explicit merge plan before writing multiple files.
 
-Read `references/obsidian-schema.md` for note types, properties, and templates.
+Read `references/obsidian-schema.md` for note types, properties, source locators, and templates.
 Read `references/vault-merge.md` before merging a new reading/discussion into an existing Vault.
+Read `references/bases-spec.md` when creating or editing a `.base` view, including when `obsidian-bases` is unavailable.
 
 ### Canonical note types
 
@@ -325,13 +328,13 @@ When creating or updating `.canvas`:
 
 Read `references/canvas-spec.md` before generating or editing Canvas files.
 
-If this package's validator is available, run:
+If this package's validator is available, resolve the absolute directory containing this `SKILL.md` and run:
 
 ```bash
-python scripts/validate_canvas.py path/to/map.canvas
+python "<skill-root>/scripts/validate_canvas.py" "<canvas-path>"
 ```
 
-before claiming the Canvas is valid.
+Replace the placeholders with actual paths. The validator checks JSON Canvas 1.0 structure and this Skill's duplicate-node policy; it does not prove that a map is historically correct or renders as intended.
 
 ## Output Strategy
 

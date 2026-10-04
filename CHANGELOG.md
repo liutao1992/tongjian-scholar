@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.3.2
+
+- 为关键历史判断增加可核查的来源位置，并收紧司马光明确判断的定义。
+- 增强 Canvas 校验器对畸形输入与可选字段的检查。
+- 明确跨目录调用校验脚本的方法，并提供不依赖 companion Skill 的 Bases 最小模板。
+
 ## 1.3.1
 
 - Rename the Skill to `tongjian-scholar`.

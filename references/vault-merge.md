@@ -203,9 +203,11 @@ Canvas
 若包内脚本可用，可运行：
 
 ```bash
-python scripts/validate_vault.py /path/to/vault
-python scripts/validate_canvas.py /path/to/map.canvas
+python "<skill-root>/scripts/validate_vault.py" "<vault-path>"
+python "<skill-root>/scripts/validate_canvas.py" "<canvas-path>"
 ```
+
+将 `<skill-root>` 替换为本 Skill 的 `SKILL.md` 所在目录的绝对路径；其他占位符替换为实际目标路径。
 
 ## 4. 冲突与修正
 

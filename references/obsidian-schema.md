@@ -37,6 +37,9 @@ Rules:
 - `aliases` absorbs alternate names and spelling variants instead of creating duplicate files.
 - `status` may use values such as `canonical`, `draft`, `contested`, or `open-question` when useful.
 - reading logs/process notes do not need canonical `uid`.
+- `source` identifies a work, while `source_refs` records verifiable locations for consequential claims; neither a work title nor an empty locator proves a claim.
+- Each `source_refs` entry should contain the known parts of `作品｜卷/篇｜纪年/段落｜版本或 URL`. Do not save placeholders as if they were checked references.
+- Put the locator next to the claim in `史料与出处` when several claims use different passages. Include work, volume/chapter, year or passage, and edition/URL when available. Mark any unresolved locator as unverified instead of guessing.
 
 Before creating a new note, search title, aliases, and (when present) `uid`.
 
@@ -78,6 +81,7 @@ themes:
   - "[[政治联盟]]"
 source:
   - 资治通鉴
+source_refs: []
 ---
 
 # 吴起
@@ -101,6 +105,8 @@ source:
 ## 成功之处
 
 ## 失败机制
+
+## 史料与出处
 
 ## 相关事件
 
@@ -134,6 +140,7 @@ themes:
   - "[[权力交接]]"
 source:
   - 资治通鉴
+source_refs: []
 ---
 
 # 吴起变法
@@ -169,6 +176,8 @@ source:
 
 ## 可抽象机制
 
+## 史料与出处
+
 ## 待继续追问
 ```
 
@@ -182,6 +191,7 @@ type: concept
 uid: concept:权力交接风险
 status: canonical
 category: historical-mechanism
+source_refs: []
 ---
 
 # 权力交接风险
@@ -200,6 +210,8 @@ category: historical-mechanism
 
 - [[吴起变法]]
 
+## 史料与出处
+
 ## 对比案例
 
 ## 现代映射
@@ -216,6 +228,7 @@ category: historical-mechanism
 type: comparison
 uid: comparison:吴起变法-vs-商鞅变法
 status: canonical
+source_refs: []
 cases:
   - "[[吴起变法]]"
   - "[[商鞅变法]]"
@@ -250,6 +263,8 @@ themes:
 ## 我的结论
 
 ## 仍不确定的问题
+
+## 史料与出处
 ```
 
 ---
